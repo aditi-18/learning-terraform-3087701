@@ -24,7 +24,7 @@ module "blog_vpc" {
   name = "dev"
   cidr = "10.0.0.0/16"
 
-  azs             = [ "us-west-2a", "us-west-2"]
+  azs             = [ "us-west-2a", "us-west-2b", "us-west-2c"]
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 
 
@@ -51,7 +51,7 @@ module "alb" {
   source = "terraform-aws-modules/alb/aws"
 
   name            = "blog-alb"
-  vpc_id          = "module.blog_vpc.vpc_id"
+  vpc_id          = module.blog_vpc.vpc_id
   subnets         = module.blog_vpc.public_subnets
   security_groups = [module.blog_sg.security_group_id]
 
@@ -83,7 +83,7 @@ module "alb" {
       protocol         = "HTTP"
       port             = 80
       target_type      = "instance"
-      target_id        = "aws_instance.blog.id"
+      target_id        = "aws_instance.web.id"
     }
   }
 
